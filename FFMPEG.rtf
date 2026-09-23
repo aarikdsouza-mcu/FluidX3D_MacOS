@@ -1,0 +1,327 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2907
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;\f1\froman\fcharset0 Times-Bold;\f2\froman\fcharset0 Times-Roman;
+\f3\fmodern\fcharset0 Courier-Bold;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red109\green109\blue109;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c50196\c50196\c50196;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 rom pathlib import Path\
+\
+content = """# FluidX3D \'97 FFmpeg Video Creation Commands\
+\
+## 1. Check FFmpeg\
+\
+```bash\
+ffmpeg -version\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 2. Create a contiguous frame sequence\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 FluidX3D may export frames with timestep numbers such as 
+\f0\fs26 000000028
+\f2\fs24 , 
+\f0\fs26 000000056
+\f2\fs24 , etc. FFmpeg expects consecutive 
+\f0\fs26 %06d
+\f2\fs24  numbers, so first copy the frames into a temporary contiguous sequence.\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f1\b\fs28 \cf0 TIE / 
+\f3\fs30\fsmilli15210 t
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+rm -rf video_frames\
+mkdir video_frames\
+i=1\
+for f in bin/export/t/image-*.png; do\
+    printf -v n "%06d" "$i"\
+    cp "$f" "video_frames/image-$n.png"\
+    ((i++))\
+done\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 s
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+rm -rf video_frames\
+mkdir video_frames\
+i=1\
+for f in bin/export/s/image-*.png; do\
+    printf -v n "%06d" "$i"\
+    cp "$f" "video_frames/image-$n.png"\
+    ((i++))\
+done\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 f
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+rm -rf video_frames\
+mkdir video_frames\
+i=1\
+for f in bin/export/f/image-*.png; do\
+    printf -v n "%06d" "$i"\
+    cp "$f" "video_frames/image-$n.png"\
+    ((i++))\
+done\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 b
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+rm -rf video_frames\
+mkdir video_frames\
+i=1\
+for f in bin/export/b/image-*.png; do\
+    printf -v n "%06d" "$i"\
+    cp "$f" "video_frames/image-$n.png"\
+    ((i++))\
+done\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 3. Encode each view at 30 FPS\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\fs30\fsmilli15210 \cf0 t.mp4
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    t.mp4\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 s.mp4
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    s.mp4\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 f.mp4
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    f.mp4\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f3\b\fs30\fsmilli15210 \cf0 b.mp4
+\f1\fs28 \
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    b.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 4. Concatenate the four videos\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 Create the FFmpeg concat list:\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+printf "file 't.mp4'\\\\nfile 's.mp4'\\\\nfile 'f.mp4'\\\\nfile 'b.mp4'\\\\n" > videos.txt\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\fs24 \cf0 Concatenate:\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+ffmpeg -f concat -safe 0 -i videos.txt \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    all_views.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 5. Check video information\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -i t.mp4\
+\
+\
+ffmpeg -i s.mp4\
+\
+\
+ffmpeg -i f.mp4\
+\
+\
+ffmpeg -i b.mp4\
+\
+\
+ffmpeg -i all_views.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 6. Check the output resolution / aspect ratio\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -i t.mp4 2>&1 | grep -E "Video:|Stream"\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\fs24 \cf0 Or for the combined video:\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+ffmpeg -i all_views.mp4 2>&1 | grep -E "Video:|Stream"\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 7. Create a video while preserving the PNG dimensions\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 The commands above do not force a resolution. FFmpeg therefore uses the dimensions of the PNG frames.\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    output.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 8. Higher-quality archival encode\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset slow -crf 15 \\\
+    -pix_fmt yuv420p \\\
+    output_high_quality.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 9. Smaller-file encode\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 23 \\\
+    -pix_fmt yuv420p \\\
+    output_small.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 10. Remove temporary frame copies\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 After encoding:\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+rm -rf video_frames\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 11. Open the finished video on macOS\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+open t.mp4\
+\
+\
+open s.mp4\
+\
+\
+open f.mp4\
+\
+\
+open b.mp4\
+\
+\
+open all_views.mp4\
+\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 12. Reveal the finished video in Finder\
+\pard\pardeftab720\partightenfactor0
+
+\f0\b0\fs26 \cf0 \
+open -R all_views.mp4\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2\fs24 \cf3 \strokec3 \
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f1\b\fs36 \cf0 \strokec2 Recommended standard workflow\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 For a FluidX3D export directory such as 
+\f0\fs26 bin/export/t
+\f2\fs24 :\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+rm -rf video_frames\
+mkdir video_frames\
+i=1\
+for f in bin/export/t/image-*.png; do\
+    printf -v n "%06d" "$i"\
+    cp "$f" "video_frames/image-$n.png"\
+    ((i++))\
+done\
+\
+ffmpeg -framerate 30 \\\
+    -i "video_frames/image-%06d.png" \\\
+    -c:v libx264 -preset medium -crf 18 \\\
+    -pix_fmt yuv420p \\\
+    t.mp4\
+\
+rm -rf video_frames\
+\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\fs24 \cf0 This produces a 30-FPS H.264 MP4 while preserving the original PNG resolution and avoiding the non-consecutive FluidX3D timestep-numbering problem.\uc0\u8232 """\
+path = Path("/mnt/data/FluidX3D_FFmpeg_Video_README.md")\uc0\u8232 path.write_text(content)\u8232 print(path)\
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs26 \cf0 \
+\
+}
